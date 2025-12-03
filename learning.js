@@ -1,17 +1,27 @@
 //ヘッダー------------------------------------------------------------------------------------
 let lastY = window.scrollY;
+let hideThreshold = 50;
+let showThreshold = 20;
+let accumulatedDown = 0;
+let accumulatedUp = 0;
 window.addEventListener('scroll', () => {
     const currentY = window.scrollY;
-    if (currentY > lastY) {
-        // 下スクロール → 隠す
-        document.querySelector('.header-move').style.transform = 'translateY(-500%)';
+    const diff = currentY - lastY;
+    if (diff > 0) {
+        accumulatedDown += diff;
+        accumulatedUp = 0;
+        if (accumulatedDown > hideThreshold) {
+            document.querySelector('.header-move').style.transform = 'translateY(-500%)';
+        }
     } else {
-        // 上スクロール → 表示
-        document.querySelector('.header-move').style.transform = 'translateY(0)';
+        accumulatedUp -= diff;
+        accumulatedDown = 0;
+        if (accumulatedUp > showThreshold) {
+            document.querySelector('.header-move').style.transform = 'translateY(0)';
+        }
     }
     lastY = currentY;
 });
-
 //モーダルウィンドウ----------------------------------------------------------------------------
 // ボタンを押したときのモーダル表示
 document.querySelectorAll('.contents .button').forEach(button => {
